@@ -54,6 +54,29 @@
     font-size:14px;
     margin-bottom:30px;
   }
+  .rules-box{
+    background:rgba(184,85,43,0.1);
+    border:1px solid rgba(207,159,60,0.35);
+    border-radius:14px;
+    padding:16px 18px;
+    margin-bottom:22px;
+    font-size:13px;
+    line-height:1.6;
+    color:rgba(243,230,204,0.85);
+  }
+  .rules-box strong{
+    color:var(--husk-gold-bright);
+  }
+  .rules-box ul{
+    margin:8px 0 0;
+    padding-left:18px;
+  }
+  .rules-box li{
+    margin-bottom:6px;
+  }
+  .rules-box li:last-child{
+    margin-bottom:0;
+  }
   .drum{
     display:grid;
     grid-template-columns:1fr;
@@ -198,11 +221,19 @@
   <h1>Roast Bake Draw</h1>
   <div class="sub">Every bake starts with coconut. Tap your team, then draw what makes yours unique.</div>
 
+  <div class="rules-box">
+    <strong>Before you draw:</strong>
+    <ul>
+      <li>Each team must appoint <strong>one</strong> person to do the draw. If a team draws under any card other than their own, that team will be <strong>penalized</strong>.</li>
+      <li>Tap the word "Team" on your card to type in your official team name — do this first, before drawing.</li>
+    </ul>
+  </div>
+
   <div class="drum" id="drum"></div>
 
   <div class="pool-status" id="poolStatus"></div>
 
-  <div class="footer-note">Each team taps their own card to reveal their ingredient. The draw was done fairly in advance, so whoever opens this link — on any phone — sees the same result for each team.</div>
+  <div class="footer-note">Each team taps their own card to reveal their ingredient.</div>
 </div>
 
 <div class="toast" id="toast"></div>

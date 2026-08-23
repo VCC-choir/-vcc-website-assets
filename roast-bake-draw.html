@@ -203,7 +203,6 @@
   <div class="pool-status" id="poolStatus"></div>
 
   <div class="footer-note">Each team taps their own card to reveal their ingredient. The draw was done fairly in advance, so whoever opens this link — on any phone — sees the same result for each team.</div>
-  <button class="reset-link" id="resetBtn">Reset the draw</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -344,14 +343,6 @@ async function finalizeDraw(id, btn){
   showToast(state.teams[id].name + ' drew ' + FIXED_ASSIGNMENTS[id] + '!');
   render();
 }
-
-document.getElementById('resetBtn').addEventListener('click', async () => {
-  if(confirm('Reset the reveal on this device? (Each team\'s ingredient stays the same — this just hides it again so you can re-draw the animation.)')){
-    state = defaultState();
-    await saveState();
-    render();
-  }
-});
 
 loadState();
 </script>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roast Bake Draw — VCC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ember-black:#231710;
+    --ember-black-soft:#2e2118;
+    --husk-gold:#cf9f3c;
+    --husk-gold-bright:#e6bd5c;
+    --coconut-cream:#f3e6cc;
+    --fire-clay:#b8552b;
+    --leaf-green:#3a5642;
+    --line:rgba(243,230,204,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 20% -10%, #3a2a1c 0%, transparent 55%),
+      radial-gradient(circle at 100% 10%, rgba(184,85,43,0.15) 0%, transparent 45%),
+      var(--ember-black);
+    color:var(--coconut-cream);
+    font-family:'Karla',sans-serif;
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+  .wrap{max-width:640px;margin:0 auto;}
+  .eyebrow{
+    font-family:'Karla',sans-serif;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--husk-gold);
+    text-align:center;
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:900;
+    font-size:clamp(30px,7vw,42px);
+    text-align:center;
+    margin:0 0 6px;
+    line-height:1.05;
+    color:var(--coconut-cream);
+  }
+  .sub{
+    text-align:center;
+    color:rgba(243,230,204,0.65);
+    font-size:14px;
+    margin-bottom:30px;
+  }
+  .rules-box{
+    background:rgba(184,85,43,0.1);
+    border:1px solid rgba(207,159,60,0.35);
+    border-radius:14px;
+    padding:16px 18px;
+    margin-bottom:22px;
+    font-size:13px;
+    line-height:1.6;
+    color:rgba(243,230,204,0.85);
+  }
+  .rules-box strong{
+    color:var(--husk-gold-bright);
+  }
+  .rules-box ul{
+    margin:8px 0 0;
+    padding-left:18px;
+  }
+  .rules-box li{
+    margin-bottom:6px;
+  }
+  .rules-box li:last-child{
+    margin-bottom:0;
+  }
+  .drum{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+  @media(min-width:520px){
+    .drum{grid-template-columns:1fr 1fr;}
+  }
+  .card{
+    background:var(--ember-black-soft);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:16px 18px;
+    position:relative;
+    overflow:hidden;
+    transition:border-color .3s ease, transform .2s ease;
+  }
+  .card.drawn{
+    border-color:var(--husk-gold);
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:-30px;right:-30px;
+    width:90px;height:90px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(207,159,60,0.16), transparent 70%);
+  }
+  .name-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .team-name{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:18px;
+    color:var(--coconut-cream);
+    background:none;
+    border:none;
+    border-bottom:1px dashed transparent;
+    padding:0;
+    width:100%;
+    outline:none;
+  }
+  .team-name:focus{border-bottom-color:var(--husk-gold);}
+  .pencil{
+    font-size:12px;
+    color:rgba(243,230,204,0.4);
+    flex-shrink:0;
+  }
+  .ingredient-slot{
+    min-height:52px;
+    display:flex;
+    align-items:center;
+  }
+  .ingredient-tag{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:20px;
+    color:var(--husk-gold-bright);
+  }
+  .waiting{
+    color:rgba(243,230,204,0.4);
+    font-size:13px;
+    font-style:italic;
+  }
+  .draw-btn{
+    width:100%;
+    padding:11px;
+    border-radius:10px;
+    border:1px solid var(--husk-gold);
+    background:transparent;
+    color:var(--husk-gold-bright);
+    font-family:'Karla',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:0.03em;
+    cursor:pointer;
+    transition:background .2s ease, color .2s ease;
+  }
+  .draw-btn:active{transform:scale(0.98);}
+  .draw-btn:disabled{
+    opacity:0.5;
+    cursor:default;
+  }
+  .draw-btn.spin{
+    background:var(--fire-clay);
+    color:var(--coconut-cream);
+    border-color:var(--fire-clay);
+  }
+  .footer-note{
+    text-align:center;
+    margin-top:26px;
+    font-size:12px;
+    color:rgba(243,230,204,0.4);
+    line-height:1.6;
+  }
+  .pool-status{
+    text-align:center;
+    margin-top:22px;
+    font-size:12px;
+    color:rgba(243,230,204,0.5);
+  }
+  .reset-link{
+    display:block;
+    text-align:center;
+    margin-top:18px;
+    font-size:11px;
+    color:rgba(243,230,204,0.3);
+    text-decoration:underline;
+    cursor:pointer;
+    background:none;
+    border:none;
+  }
+  .toast{
+    position:fixed;
+    bottom:24px;left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--husk-gold);
+    color:var(--ember-black);
+    padding:10px 18px;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:700;
+    opacity:0;
+    transition:opacity .25s ease, transform .25s ease;
+    pointer-events:none;
+    white-space:nowrap;
+  }
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Vega De Oropouche SDA · VCC Roast Bake Social</div>
+  <h1>Roast Bake Draw</h1>
+  <div class="sub">Every bake starts with coconut. Tap your team, then draw what makes yours unique.</div>
+
+  <div class="rules-box">
+    <strong>Before you draw:</strong>
+    <ul>
+      <li>Each team must appoint <strong>one</strong> person to do the draw. If a team draws under any card other than their own, that team will be <strong>penalized</strong>.</li>
+      <li>Tap the word "Team" on your card to type in your official team name — do this first, before drawing.</li>
+    </ul>
+  </div>
+
+  <div class="drum" id="drum"></div>
+
+  <div class="pool-status" id="poolStatus"></div>
+
+  <div class="footer-note">Each team taps their own card to reveal their ingredient.</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// This draw is fixed in advance (fair shuffle done once) so every team who
+// opens this link — on GitHub Pages, no shared backend needed — sees the
+// same, consistent result. Reveal state (has this team tapped yet?) and
+// custom team names are remembered per-device using localStorage.
+const STORAGE_KEY = 'roastbake-draw-state-v1';
+const TEAM_IDS = ['team1','team2','team3','team4','team5','team6'];
+const FIXED_ASSIGNMENTS = {
+  team1: 'Carrot',
+  team2: 'Cheese',
+  team3: 'Raisins',
+  team4: 'Pumpkin',
+  team5: 'Beet',
+  team6: 'Dasheen Bush (Bhaji)'
+};
+
+let state = null;
+
+function defaultState(){
+  const teams = {};
+  TEAM_IDS.forEach((id, i) => {
+    teams[id] = { name: 'Team ' + (i+1), revealed: false };
+  });
+  return { teams };
+}
+
+async function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    state = raw ? JSON.parse(raw) : defaultState();
+  } catch(e){
+    state = defaultState();
+  }
+  render();
+}
+
+async function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e){
+    showToast("Couldn't save on this device");
+  }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function render(){
+  const drum = document.getElementById('drum');
+  drum.innerHTML = '';
+  let revealedCount = 0;
+  TEAM_IDS.forEach(id => {
+    const team = state.teams[id];
+    if(team.revealed) revealedCount++;
+    const card = document.createElement('div');
+    card.className = 'card' + (team.revealed ? ' drawn' : '');
+
+    const nameRow = document.createElement('div');
+    nameRow.className = 'name-row';
+    const nameInput = document.createElement('input');
+    nameInput.className = 'team-name';
+    nameInput.value = team.name;
+    nameInput.maxLength = 24;
+    nameInput.addEventListener('change', async () => {
+      state.teams[id].name = nameInput.value.trim() || team.name;
+      await saveState();
+    });
+    const pencil = document.createElement('span');
+    pencil.className = 'pencil';
+    pencil.textContent = '✎';
+    nameRow.appendChild(nameInput);
+    nameRow.appendChild(pencil);
+    card.appendChild(nameRow);
+
+    const slot = document.createElement('div');
+    slot.className = 'ingredient-slot';
+    if(team.revealed){
+      slot.innerHTML = '<span class="ingredient-tag">' + FIXED_ASSIGNMENTS[id] + '</span>';
+    } else {
+      slot.innerHTML = '<span class="waiting">Coconut bake — ingredient not yet drawn</span>';
+    }
+    card.appendChild(slot);
+
+    const btn = document.createElement('button');
+    btn.className = 'draw-btn';
+    if(team.revealed){
+      btn.textContent = 'Drawn';
+      btn.disabled = true;
+    } else {
+      btn.textContent = 'Draw ingredient';
+      btn.addEventListener('click', () => drawForTeam(id, btn));
+    }
+    card.appendChild(btn);
+
+    drum.appendChild(card);
+  });
+
+  const status = document.getElementById('poolStatus');
+  const left = TEAM_IDS.length - revealedCount;
+  status.textContent = left > 0
+    ? left + ' team' + (left === 1 ? '' : 's') + ' still to draw'
+    : 'Every team has drawn their ingredient';
+}
+
+const ALL_INGREDIENTS = Object.values(FIXED_ASSIGNMENTS);
+
+async function drawForTeam(id, btn){
+  if(state.teams[id].revealed) return;
+  btn.disabled = true;
+  btn.classList.add('spin');
+  btn.textContent = 'Drawing…';
+
+  // brief suspense before reveal — flickers through all ingredients,
+  // then settles on this team's pre-set result
+  let flickers = 0;
+  const flickerInterval = setInterval(() => {
+    const rand = ALL_INGREDIENTS[Math.floor(Math.random()*ALL_INGREDIENTS.length)];
+    btn.textContent = rand;
+    flickers++;
+    if(flickers > 6){
+      clearInterval(flickerInterval);
+      finalizeDraw(id, btn);
+    }
+  }, 90);
+}
+
+async function finalizeDraw(id, btn){
+  state.teams[id].revealed = true;
+  await saveState();
+  showToast(state.teams[id].name + ' drew ' + FIXED_ASSIGNMENTS[id] + '!');
+  render();
+}
+
+loadState();
+</script>
+</body>
+</html>
